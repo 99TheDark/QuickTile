@@ -51,8 +51,6 @@ class Player {
         return "[object Player]";
     }
 }
-class Camera {
-}
 class Level {
     static default = {
         "-": Block,
@@ -116,6 +114,30 @@ class LevelCollection {
         return "[object LevelCollection]";
     }
 }
+class MovementDetection {
+    left;
+    right;
+    jump;
+    constructor() {
+        [this.left, this.right, this.jump] = Array(3).fill(false);
+        document.addEventListener("keydown", e => {
+            if (e.key == "a")
+                this.left = true;
+            if (e.key == "d")
+                this.right = true;
+            if (e.key == "w")
+                this.jump = true;
+        });
+        document.addEventListener("keyup", e => {
+            if (e.key == "a")
+                this.left = false;
+            if (e.key == "d")
+                this.right = false;
+            if (e.key == "w")
+                this.jump = false;
+        });
+    }
+}
 class TileEngine {
     levels;
     player;
@@ -125,6 +147,7 @@ class TileEngine {
     height;
     scale;
     levelidx;
+    keys;
     constructor(canvas, levels, playerSettings, scale) {
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
@@ -132,6 +155,7 @@ class TileEngine {
         this.player = new Player(playerSettings.width, playerSettings.height);
         this.scale = scale;
         this.levelidx = 0;
+        this.keys = new MovementDetection();
         let level = this.currentLevel();
         this.player.reset(level.spawn.x, level.spawn.y);
         let canvasStyle = getComputedStyle(canvas);
