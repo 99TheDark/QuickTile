@@ -81,10 +81,6 @@ class Player {
     }
 }
 
-class Camera {
-
-}
-
 class Level {
     static default: LevelBitmapBlockMap = {
         "-": Block,
@@ -155,6 +151,27 @@ class LevelCollection {
     }
 }
 
+class MovementDetection {
+    left: boolean;
+    right: boolean;
+    jump: boolean;
+
+    constructor() {
+        [this.left, this.right, this.jump] = Array(3).fill(false);
+
+        document.addEventListener("keydown", e => {
+            if(e.key == "a") this.left = true;
+            if(e.key == "d") this.right = true;
+            if(e.key == "w") this.jump = true;
+        });
+        document.addEventListener("keyup", e => {
+            if(e.key == "a") this.left = false;
+            if(e.key == "d") this.right = false;
+            if(e.key == "w") this.jump = false;
+        });
+    }
+}
+
 class TileEngine {
     levels: LevelCollection;
     player: Player;
@@ -164,6 +181,7 @@ class TileEngine {
     height: number;
     scale: number;
     levelidx: number;
+    keys: MovementDetection;
 
     constructor(canvas: HTMLCanvasElement, levels: LevelCollection, playerSettings: PlayerSettings, scale: number) {
         this.canvas = canvas;
@@ -173,6 +191,7 @@ class TileEngine {
         this.scale = scale;
 
         this.levelidx = 0;
+        this.keys = new MovementDetection();
 
         let level = this.currentLevel();
 
