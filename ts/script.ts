@@ -152,23 +152,23 @@ class LevelCollection {
 }
 
 class MovementDetection {
-    left: boolean;
-    right: boolean;
-    jump: boolean;
+    keys: Map<string, boolean>;
 
     constructor() {
-        [this.left, this.right, this.jump] = Array(3).fill(false);
+        this.keys = new Map();
 
         document.addEventListener("keydown", e => {
-            if(e.key == "a") this.left = true;
-            if(e.key == "d") this.right = true;
-            if(e.key == "w") this.jump = true;
+            this.keys.set(e.key, true);
         });
         document.addEventListener("keyup", e => {
-            if(e.key == "a") this.left = false;
-            if(e.key == "d") this.right = false;
-            if(e.key == "w") this.jump = false;
+            this.keys.set(e.key, false);
         });
+    }
+    down(key: string): boolean {
+        return this.keys.get(key) ?? false;
+    }
+    up(key: string): boolean {
+        return !this.keys.get(key) ?? true;
     }
 }
 
@@ -203,9 +203,11 @@ class TileEngine {
         [this.width, this.height] = [this.canvas.width, this.canvas.height];
 
         let draw = () => {
-            let {ctx, width, height, player, scale} = this;
+            const {ctx, width, height, player, scale, keys} = this;
 
             ctx.clearRect(0, 0, width, height);
+
+            // keys.down("w")
 
             // TODO: Calculate collidable blocks
 
